@@ -1,8 +1,21 @@
 import argparse
+import os
+
+from dotenv import load_dotenv
 
 
 def main():
-   download, level, song_length, pause_length = parse_arguments()
+    
+    # get environment variables and command line arguments
+    load_dotenv()
+    playlists = [
+        os.getenv("SLOW_WALTZ_URL"), 
+        os.getenv("TANGO_URL"), 
+        os.getenv("VIENNESE_WALTZ_URL"), 
+        os.getenv("SLOW_FOXTROT_URL"), 
+        os.getenv("QUICKSTEP_URL"), 
+    ]
+    download, level, song_length, pause_length = parse_arguments()
 
 
 def parse_arguments():
