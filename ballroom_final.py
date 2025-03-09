@@ -1,12 +1,14 @@
 import argparse
 import os
+import re
 
 from dotenv import load_dotenv
+from ytmusicapi import YTMusic
 
 
 def main():
     
-    # get environment variables and command line arguments
+    # get environment variables, command line arguments and other setup
     load_dotenv()
     playlists = [
         os.getenv("SLOW_WALTZ_URL"), 
@@ -15,7 +17,50 @@ def main():
         os.getenv("SLOW_FOXTROT_URL"), 
         os.getenv("QUICKSTEP_URL"), 
     ]
+    playlist_ids = extract_playlist_ids(playlists)
+    ytmusic = YTMusic()
     download, level, song_length, pause_length = parse_arguments()
+
+    # check for the presence of directories and songs for each dance
+    songs_present = {}
+    dances = [
+        "slow_waltz",
+        "tango",
+        "viennese_waltz",
+        "slow_foxtrot",
+        "quickstep"
+    ]
+    this_dir = os.path.dirname(os.path.abspath(__file__))
+    for dance in dances:
+        dir_name = dance
+        dir_path = os.path.join(this_dir, dir_name)
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+            songs_present[dance] = False
+        else:
+            matching_files = [f for f in os.listdir(dir_path) if f.endswith((".mp3", ".mp4"))]
+            if matching_files:
+                songs_present[dance] = True
+            else:
+                songs_present[dance] = False
+
+    # download songs if the download flag is given or any dance directory was empty
+    if download or any(not songs_present[dance] for dance in dances): 
+        for index, dance in enumerate(dances):
+            # select correct playlist and 
+            playlist = playlists[index]
+
+
+def extract_playlist_ids(playlists):
+    """ Extract YouTube Playlist IDs from URLs """
+    playlist_ids = []
+    for playlist in playlists:
+        id = re.search(r"^.*playlist?list=(.*)$", playlist)
+        playlist_id = id[0]
+        if not playlist_id:
+            sys.exit("Invalid playlist URL")
+        playlist_ids.append(playlist_id)
+    return playlist_ids
 
 
 def parse_arguments():
