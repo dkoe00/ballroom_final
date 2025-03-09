@@ -34,6 +34,7 @@ def main():
 
     # download songs if the download flag is given or any dance directory was empty
     if download or any(not songs_present[dance] for dance in dances): 
+        clear_directories(dances)
         for index, dance in enumerate(dances):
             # select correct playlist and retrieve information about its tracks
             playlist_id = playlist_ids[index]
@@ -50,15 +51,15 @@ def main():
             ]
             with open(f"{dance}/tracks.json", "w") as f:
                 json.dump(tracks, f)
+            # download the tracks
+            download_yt_tracks(tracks, dance)
 
 
 def check_for_songs(dances):
     """ Check if downloaded songs are present for each dance and return a dict with boolean values """
     songs_present = {}
-    this_dir = os.path.dirname(os.path.abspath(__file__))
     for dance in dances:
-        dir_name = dance
-        dir_path = os.path.join(this_dir, dir_name)
+        dir_path = generate_dir_path(dance)
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
             songs_present[dance] = False
@@ -71,6 +72,25 @@ def check_for_songs(dances):
     return songs_present
 
 
+def clear_directories(dances):
+    """ Delete all files from the directories of each dance """
+    for dance in dances:
+        dir_path = generate_dir_path(dance)
+        files = os.listdir(dir_path)
+        if files:
+            for file in files:
+                file_path = os.path.join(dir_path, file)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+    return
+
+
+def download_yt_tracks(tracks, dance):
+    """ Download the specified tracks into the relevant folder """
+    #TODO
+    return
+
+
 def extract_playlist_ids(playlists):
     """ Extract YouTube Playlist IDs from URLs """
     playlist_ids = []
@@ -81,6 +101,13 @@ def extract_playlist_ids(playlists):
         else:
             sys.exit(f"Invalid playlist URL: {playlist}")
     return playlist_ids
+
+
+def generate_dir_path(dance):
+    """ Return the path to the directory of a given dance """
+    this_dir = os.path.dirname(os.path.abspath(__file__))
+    dir_name = dance
+    return os.path.join(this_dir, dir_name)
 
 
 def parse_arguments():
