@@ -20,9 +20,6 @@ def main():
     playlist_ids = extract_playlist_ids(playlists)
     ytmusic = YTMusic()
     download, level, song_length, pause_length = parse_arguments()
-
-    # check for the presence of directories and songs for each dance
-    songs_present = {}
     dances = [
         "slow_waltz",
         "tango",
@@ -30,6 +27,20 @@ def main():
         "slow_foxtrot",
         "quickstep"
     ]
+
+    # check for the presence of directories and songs for each dance
+    songs_present = check_for_songs(dances)
+
+    # download songs if the download flag is given or any dance directory was empty
+    if download or any(not songs_present[dance] for dance in dances): 
+        for index, dance in enumerate(dances):
+            # select correct playlist and 
+            playlist = playlists[index]
+
+
+def check_for_songs(dances)
+    """ Check if downloaded songs are present for each dance and return a dict with boolean values """
+    songs_present = {}
     this_dir = os.path.dirname(os.path.abspath(__file__))
     for dance in dances:
         dir_name = dance
@@ -43,13 +54,7 @@ def main():
                 songs_present[dance] = True
             else:
                 songs_present[dance] = False
-
-    # download songs if the download flag is given or any dance directory was empty
-    if download or any(not songs_present[dance] for dance in dances): 
-        for index, dance in enumerate(dances):
-            # select correct playlist and 
-            playlist = playlists[index]
-
+    return songs_present
 
 def extract_playlist_ids(playlists):
     """ Extract YouTube Playlist IDs from URLs """
