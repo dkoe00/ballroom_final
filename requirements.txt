@@ -1,0 +1,3 @@
+python-dotenv
+ytmusicapi
+"yt-dlp[default]"
