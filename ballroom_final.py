@@ -34,11 +34,12 @@ def main():
     # download songs if the download flag is given or any dance directory was empty
     if download or any(not songs_present[dance] for dance in dances): 
         for index, dance in enumerate(dances):
-            # select correct playlist and 
-            playlist = playlists[index]
+            # select correct playlist and retrieve information about its tracks
+            playlist_id = playlist_ids[index]
+            playlist = ytmusic.get_playlist(playlistId=playlist_id, limit=None)
 
 
-def check_for_songs(dances)
+def check_for_songs(dances):
     """ Check if downloaded songs are present for each dance and return a dict with boolean values """
     songs_present = {}
     this_dir = os.path.dirname(os.path.abspath(__file__))
@@ -56,15 +57,16 @@ def check_for_songs(dances)
                 songs_present[dance] = False
     return songs_present
 
+
 def extract_playlist_ids(playlists):
     """ Extract YouTube Playlist IDs from URLs """
     playlist_ids = []
     for playlist in playlists:
-        id = re.search(r"^.*playlist?list=(.*)$", playlist)
-        playlist_id = id[0]
-        if not playlist_id:
-            sys.exit("Invalid playlist URL")
-        playlist_ids.append(playlist_id)
+        match = re.search(r"[?&]list=([^&]+)", playlist)
+        if match:
+            playlist_ids.append(match.group(1))
+        else:
+            sys.exit(f"Invalid playlist URL: {playlist}")
     return playlist_ids
 
 
