@@ -1,12 +1,8 @@
 import argparse
-import sys
-
-
-
 
 
 def main():
-   level, song_lenght, pause_length = parse_arguments()
+   level, song_length, pause_length = parse_arguments()
 
 
 def parse_arguments():
