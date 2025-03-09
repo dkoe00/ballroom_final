@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 import re
 
@@ -37,6 +38,18 @@ def main():
             # select correct playlist and retrieve information about its tracks
             playlist_id = playlist_ids[index]
             playlist = ytmusic.get_playlist(playlistId=playlist_id, limit=None)
+            # save a metadata.json file with track title, videoId, and duration in seconds for all tracks
+            tracks = [
+                {
+                    "title": track["title"],
+                    "index": i, 
+                    "videoId": track["videoId"],
+                    "duration": track["duration_seconds"]
+                }
+                for i, track in enumerate(playlist["tracks"])
+            ]
+            with open(f"{dance}/tracks.json", "w") as f:
+                json.dump(tracks, f)
 
 
 def check_for_songs(dances):
