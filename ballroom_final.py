@@ -84,7 +84,7 @@ def download_audio(url, dir_path):
     """ Download a YouTube video as a .mp3 audio file """
     # save file with video id as file name to find it later
     video_id = url.split("v=")[-1].split("&")[0]
-    output_template = os.path.join(dir_path, f"{video_id}.mp3")
+    output_template = os.path.join(dir_path, video_id)
     ydl_opts = {
         "format": "bestaudio",
         "outtmpl": output_template,
