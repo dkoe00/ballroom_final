@@ -5,6 +5,7 @@ import random
 import re
 import subprocess
 import sys
+import time
 import yt_dlp
 
 from dotenv import load_dotenv
@@ -60,7 +61,7 @@ def check_for_songs(dances):
             os.makedirs(dir_path)
             songs_present[dance] = False
         else:
-            matching_files = [f for f in os.listdir(dir_path) if f.endswith((".mp3", ".mp4"))]
+            matching_files = [f for f in os.listdir(dir_path) if f.endswith((".mp3"))]
             if matching_files:
                 songs_present[dance] = True
             else:
@@ -223,7 +224,9 @@ def set_up_downloads(playlist_ids):
 
 
 def take_break(dance, dances, pause_length):
-    #TODO
+    """ Wait the specified time if appropriate """
+    if 3 <= len(dances) <= 5 and dance != "quickstep":
+        time.sleep(pause_length)
     return
 
 
