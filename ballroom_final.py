@@ -31,7 +31,6 @@ def main():
     if any(not playlist for playlist in playlists):
         sys.exit("Please provide playlist URLs for each dance in .env file")
     playlist_ids = extract_playlist_ids(playlists)
-    ytmusic = YTMusic()
     download, level, song_length, pause_length = parse_arguments()
     dances = select_relevant_dances(level)
 
@@ -78,7 +77,7 @@ def clear_directories(dances):
 
 def construct_video_url(track):
     """ Return the YouTube video URL for a given track as a string """
-    return f"https://www.youtube.com/watch?v={track[videoId]}"
+    return f"https://www.youtube.com/watch?v={track["videoId"]}"
 
     
 def download_audio(url, dir_path):
@@ -165,6 +164,7 @@ def set_up_downloads(playlist_ids):
     for index, dance in enumerate(ALL_DANCES):
         # select correct playlist and retrieve information about its tracks
         playlist_id = playlist_ids[index]
+        ytmusic = YTMusic()
         playlist = ytmusic.get_playlist(playlistId=playlist_id, limit=None)
         # save a metadata.json file with track title, videoId, and duration in seconds for all tracks
         tracks = [
