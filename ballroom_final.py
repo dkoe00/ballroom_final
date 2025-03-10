@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import re
+import yt_dlp
 
 from dotenv import load_dotenv
 from ytmusicapi import YTMusic
@@ -85,9 +86,35 @@ def clear_directories(dances):
     return
 
 
+def construct_video_url(track):
+    """ Return the YouTube video URL for a given track as a string """
+    return f"https://www.youtube.com/watch?v={track.videoId}"
+
+    
+def download_audio(url, dir_path):
+    """ Download a YouTube video as a .mp3 audio file """
+    output_template = os.path.join(dir_path, "%(title)s.mp3")
+    ydl_opts = {
+        "format": "bestaudio",
+        "outtmpl": output_template,
+        "postprocessors": [{
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "mp3",
+            "preferredquality": "192"
+        }]
+    }
+    with yt_dlp.YoutubeDL(ydl_opts) as video:
+        video.download([url])
+    #TODO
+
+
 def download_yt_tracks(tracks, dance):
     """ Download the specified tracks into the relevant folder """
     #TODO
+    dir_path = generate_dir_path(dance)
+    for track in tracks:
+        url = construct_video_url(track)
+        download_audio(url, dir_path)
     return
 
 
