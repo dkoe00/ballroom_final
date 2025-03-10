@@ -24,6 +24,7 @@ Ensure the following system dependencies are installed:
 - Python 3.8+
 - `mpv` for audio playback
 - `ffmpeg` for audio conversion
+
 On macOS, install them using:
 ```bash
 brew install python mpv ffmpeg
