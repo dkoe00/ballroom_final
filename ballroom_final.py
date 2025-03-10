@@ -1,8 +1,11 @@
 import argparse
 import json
 import os
+import random
 import re
+import subprocess
 import sys
+import time
 import yt_dlp
 
 from dotenv import load_dotenv
@@ -41,6 +44,13 @@ def main():
     if download or any(not songs_present[dance] for dance in dances): 
         set_up_downloads(playlist_ids)
 
+    # select and play songs for the final
+    for dance in dances:
+        dir_path = generate_dir_path(dance)
+        song = select_song(dir_path, song_length)
+        play_song(dir_path, song)
+        take_break(dance, dances, pause_length)
+
 
 def check_for_songs(dances):
     """ Check if downloaded songs are present for each dance and return a dict with boolean values """
@@ -51,7 +61,7 @@ def check_for_songs(dances):
             os.makedirs(dir_path)
             songs_present[dance] = False
         else:
-            matching_files = [f for f in os.listdir(dir_path) if f.endswith((".mp3", ".mp4"))]
+            matching_files = [f for f in os.listdir(dir_path) if f.endswith((".mp3"))]
             if matching_files:
                 songs_present[dance] = True
             else:
@@ -120,6 +130,13 @@ def extract_playlist_ids(playlists):
     return playlist_ids
 
 
+def extract_song_list(dir_path):
+    """ Returns the list of tracks stored in JSON in the given directory """
+    with open(f"{dir_path}/tracks.json", "r") as f:
+        tracks = json.load(f)
+    return tracks
+
+
 def generate_dir_path(dance):
     """ Return the path to the directory of a given dance """
     this_dir = os.getcwd()
@@ -148,6 +165,13 @@ def parse_arguments():
     return download, level, song_length, pause_length
 
 
+def play_song(dir_path, song):
+    """ Plays the given song with mpv """
+    path_to_mp3 = f"{dir_path}/{song}.mp3"
+    subprocess.run(["mpv", "--no-terminal", "--quiet", path_to_mp3])
+    return
+
+
 def select_relevant_dances(level):
     """ Return a list of the relevant dances for the given level """
     if level == "d":
@@ -156,6 +180,23 @@ def select_relevant_dances(level):
         return ["slow_waltz", "tango", "slow_foxtrot", "quickstep"]
     else:
         return ALL_DANCES
+
+
+def select_song(dir_path, song_length):
+    """ Return video ID of a randomly selected song """
+    # get list of tracks and metadata from tracks.json
+    tracks = extract_song_list(dir_path)
+    # filter the tracks of correct length
+    applicable_tracks = []
+    if song_length == "long":
+        min_length, max_length = 115, 130
+    else:
+        min_length, max_length = 90, 115
+    for track in tracks:
+        if min_length <= track["duration"] <= max_length:
+            applicable_tracks.append(track["videoId"]) 
+    # randomly select a song out of the applicable tracks
+    return random.choice(applicable_tracks)
 
     
 def set_up_downloads(playlist_ids):
@@ -180,6 +221,13 @@ def set_up_downloads(playlist_ids):
             json.dump(tracks, f)
         # download the tracks
         download_yt_tracks(tracks, dance)
+
+
+def take_break(dance, dances, pause_length):
+    """ Wait the specified time if appropriate """
+    if 3 <= len(dances) <= 5 and dance != "quickstep":
+        time.sleep(pause_length)
+    return
 
 
 if __name__ == "__main__":
