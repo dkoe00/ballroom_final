@@ -20,14 +20,16 @@ The system supports five standard ballroom dances:
 #### Video Demo: [YouTube](https://youtu.be/QbHGec2kiUE)
 ## Installation
 ### Prerequisites
-Ensure the following dependencies are installed:
+Ensure the following system dependencies are installed:
 - Python 3.8+
-- `ytmusicapi` for YouTube Music API integration
-- `yt-dlp` for downloading YouTube tracks
 - `mpv` for audio playback
 - `ffmpeg` for audio conversion
+On macOS, install them using:
+```bash
+brew install python mpv ffmpeg
+```
 
-Install the required dependencies:
+Install the required Python dependencies:
 ```bash
 pip install -r requirements.txt
 ```
