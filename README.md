@@ -1,4 +1,4 @@
-Ballroom Dance Final Music Player
+# ballroom_final
 
 ## Overview
 This Python-based application is designed to automate the music selection process for ballroom dance finals. It ensures that the correct sequence of dance music is played with appropriate breaks, allowing dancers and organizers to focus on the competition or training rather than managing music manually.
