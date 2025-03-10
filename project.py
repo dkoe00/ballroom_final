@@ -206,9 +206,26 @@ def extract_playlist_ids(playlists):
 
 def extract_song_list(dir_path):
     """ Returns the list of tracks stored in JSON in the given directory """
-    with open(f"{dir_path}/tracks.json", "r") as f:
-        tracks = json.load(f)
-    return tracks
+
+    if not isinstance(dir_path, str):
+        raise ValueError("Invalid input: dir_path must be a string")
+
+    json_path = os.path.join(dir_path, "tracks.json")
+
+    if not os.path.exists(json_path):
+        raise FileNotFoundError(f"File not found: {json_path}")
+
+    try:
+        with open(json_path, "r") as f:
+            tracks = json.load(f)
+
+        if not isinstance(tracks, list) or not all(isinstance(t, dict) for t in tracks):
+            raise ValueError(f"Invalid file format: Expected a list of dictionaries, got {type(tracks).__name__}")
+    
+        return tracks
+    
+    except json.JSONDecodeError:
+        raise ValueError(f"Invalid JSON format in file: {json_path}")
 
 
 def generate_dir_path(dance):

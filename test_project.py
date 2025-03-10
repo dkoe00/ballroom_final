@@ -1,3 +1,4 @@
+import json
 import os
 import pytest
 
@@ -113,7 +114,35 @@ def test_extract_playlist_ids():
         extract_playlist_ids(["https://www.example.com/not_youtube"])
 
 
+def test_extract_song_list():
 
+    with pytest.raises(ValueError):
+        extract_song_list(123)
+
+    with pytest.raises(FileNotFoundError):
+        extract_song_list("non_existent_dir")
+
+    os.makedirs("test_dir", exist_ok=True)
+    valid_data = [{"title": "Song 1", "videoId": "abc123", "duration": 120}]
+    with open("test_dir/tracks.json", "w") as f:
+        json.dump(valid_data, f)
+
+    assert extract_song_list("test_dir") == valid_data
+
+    with open("test_dir/tracks.json", "w") as f:
+        f.write("{invalid_json")
+
+    with pytest.raises(ValueError):
+        extract_song_list("test_dir")
+
+    with open("test_dir/tracks.json", "w") as f:
+        json.dump({"title": "Not a list"}, f)
+
+    with pytest.raises(ValueError):
+        extract_song_list("test_dir")
+
+    os.remove("test_dir/tracks.json")
+    os.rmdir("test_dir")
 
 
 
