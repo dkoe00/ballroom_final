@@ -1,8 +1,11 @@
 import json
 import os
 import pytest
+import sys
+import yt_dlp
 
 from project import (
+    ALL_DANCES,
     check_for_songs,
     clear_directories, 
     construct_video_url, 
@@ -89,6 +92,10 @@ def test_download_audio():
         download_audio("https://example.com/video", "test_dir")
         download_audio("https://www.youtube.com/watch?v=abc123", 123)
 
+    with patch.object(yt_dlp.YoutubeDL, "download", return_value=None) as mock_download:
+        download_audio("https://www.youtube.com/watch?v=abc123", "test_dir")
+        mock_download.assert_called_once()
+
 
 def test_download_yt_tracks():
 
@@ -96,6 +103,15 @@ def test_download_yt_tracks():
         download_yt_tracks("not_a_list", "slow_waltz")
         download_yt_tracks([{"videoId": "abc123"}], 123)
         download_yt_tracks([123, {"videoId": "abc123"}], "slow_waltz")
+
+    tracks = [{"videoId": "abc123"}, {"videoId": "def456"}]
+
+    with patch("project.construct_video_url", return_value="https://www.youtube.com/watch?v=abc123"), \
+         patch("project.download_audio") as mock_download:
+
+        download_yt_tracks(tracks, "slow_waltz")
+
+        assert mock_download.call_count == 2
 
 
 def test_extract_playlist_ids():
@@ -205,3 +221,27 @@ def test_play_song():
 
     os.remove("test_dir/song.mp3")
     os.rmdir("test_dir")
+
+
+def test_select_relevant_dances():
+
+    assert select_relevant_dances("d") == ["slow_waltz", "tango", "quickstep"]
+    assert select_relevant_dances("c") == ["slow_waltz", "tango", "slow_foxtrot", "quickstep"]
+    assert select_relevant_dances("b") == ALL_DANCES 
+
+    assert select_relevant_dances("D") == ["slow_waltz", "tango", "quickstep"]
+    assert select_relevant_dances("C") == ["slow_waltz", "tango", "slow_foxtrot", "quickstep"]
+    assert select_relevant_dances("B") == ALL_DANCES 
+
+    with pytest.raises(ValueError):
+        select_relevant_dances(123)
+        select_relevant_dances("x")
+        select_relevant_dances("")
+
+
+
+
+
+
+
+

@@ -265,6 +265,9 @@ def play_song(dir_path, song):
 
     path_to_mp3 = os.path.join(dir_path, f"{song}.mp3")
 
+    if not os.path.exists(path_to_mp3):
+        raise FileNotFoundError(f"File not found: {path_to_mp3}")
+
     try:    
         subprocess.run(["mpv", "--no-terminal", "--quiet", path_to_mp3], check=True)
     except subprocess.CalledProcessError as e:
@@ -273,12 +276,19 @@ def play_song(dir_path, song):
 
 def select_relevant_dances(level):
     """ Return a list of the relevant dances for the given level """
+    if not isinstance(level, str):
+        raise ValueError("Invalid input: level must be a string")
+    
+    level = level.lower()
+
     if level == "d":
         return ["slow_waltz", "tango", "quickstep"]
     elif level == "c":
         return ["slow_waltz", "tango", "slow_foxtrot", "quickstep"]
-    else:
+    elif level == "b":
         return ALL_DANCES
+    else:
+        raise ValueError(f"Invalid level: {level}. Must be d, c, or b.")
 
 
 def select_song(dir_path, song_length):
