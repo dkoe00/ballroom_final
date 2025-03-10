@@ -3,6 +3,7 @@ import json
 import os
 import random
 import re
+import subprocess
 import sys
 import yt_dlp
 
@@ -164,8 +165,9 @@ def parse_arguments():
 
 
 def play_song(dir_path, song):
-    #TODO
+    """ Plays the given song with mpv """
     path_to_mp3 = f"{dir_path}/{song}.mp3"
+    subprocess.run(["mpv", "--no-terminal", "--quiet", path_to_mp3])
     return
 
 
