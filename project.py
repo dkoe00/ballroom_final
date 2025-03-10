@@ -118,7 +118,7 @@ def construct_video_url(track):
     if not isinstance(track, dict):
         raise ValueError("Invalid input: track must be a dictionary")
 
-    if "videoId" nor in track or not isinstance(track["videoId"], str):
+    if "videoId" not in track or not isinstance(track["videoId"], str):
         raise KeyError("Invalid track data: 'videoId' key missing or not a string")
 
     return f"https://www.youtube.com/watch?v={track["videoId"]}"
@@ -126,9 +126,31 @@ def construct_video_url(track):
     
 def download_audio(url, dir_path):
     """ Download a YouTube video as a .mp3 audio file """
+
+    if not isinstance(url, str) or "youtube.com/watch?v=" not in url:
+        raise ValueError("Invalid URL: Must be a valid YouTube video link")
+
+    if not isinstance(dir_path, str):
+        raise ValueError("Invalid directory path: Must be a string")
+
+    if not os.path.exists(dir_path):
+        try:
+            os.makedirs(dir_path)
+        except OSError as e:
+            logging.error(f"Error creating directory {dir_path}: {e}")
+            raise
+    
     # save file with video id as file name to find it later
-    video_id = url.split("v=")[-1].split("&")[0]
+    try:
+        video_id = url.split("v=")[-1].split("&")[0]
+        if not video_id:
+            raise ValueError("Invalid URL: Unable to extract video ID")
+    except Exception as e:
+        logging.error(f"Error extracting video ID from URL {url}: {e}")
+        raise
+
     output_template = os.path.join(dir_path, video_id)
+
     ydl_opts = {
         "format": "bestaudio",
         "outtmpl": output_template,
@@ -138,8 +160,14 @@ def download_audio(url, dir_path):
             "preferredquality": "192"
         }]
     }
-    with yt_dlp.YoutubeDL(ydl_opts) as video:
-        video.download([url])
+    
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as video:
+            video.download([url])
+    except yt_dlp.utils.DownloadError as e:
+        logging.error(f"Download failed for {url}: {e}")
+        raise
+
     return
 
 

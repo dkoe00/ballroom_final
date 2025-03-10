@@ -58,7 +58,7 @@ def test_clear_directories():
     assert os.path.exists("test_dance_2/song.mp3")
     assert os.path.exists("test_dance_2/other_file.txt")
 
-    clear_directories(["test)dance)2"])
+    clear_directories(["test_dance_2"])
 
     assert not os.path.exists("test_dance_2/song.mp3")
     assert not os.path.exists("test_dance_2/other_file.txt")
@@ -80,6 +80,9 @@ def test_construct_video_url():
         construct_video_url({"videoId": 123})
 
 
+def test_download_audio():
 
-
-
+    with pytest.raises(ValueError):
+        download_audio("not_a_url", "test_dir")
+        download_audio("https://example.com/video", "test_dir")
+        download_audio("https://www.youtube.com/watch?v=abc123", 123)
