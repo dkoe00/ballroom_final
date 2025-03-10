@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import random
 import re
 import sys
 import yt_dlp
@@ -40,6 +41,12 @@ def main():
     # download songs if the download flag is given or any dance directory was empty
     if download or any(not songs_present[dance] for dance in dances): 
         set_up_downloads(playlist_ids)
+
+    # select and play songs for the final
+    for dance in dances:
+        song = select_song(dance, song_length)
+        play_song(song)
+        take_break(dance, dances, pause_length)
 
 
 def check_for_songs(dances):
@@ -120,6 +127,12 @@ def extract_playlist_ids(playlists):
     return playlist_ids
 
 
+def extract_song_list(dir_path):
+    """ Returns the list of tracks stored in JSON in the given directory """
+    #TODO
+    return tracks
+
+
 def generate_dir_path(dance):
     """ Return the path to the directory of a given dance """
     this_dir = os.getcwd()
@@ -148,6 +161,11 @@ def parse_arguments():
     return download, level, song_length, pause_length
 
 
+def play_song(song):
+    #TODO
+    return
+
+
 def select_relevant_dances(level):
     """ Return a list of the relevant dances for the given level """
     if level == "d":
@@ -156,6 +174,24 @@ def select_relevant_dances(level):
         return ["slow_waltz", "tango", "slow_foxtrot", "quickstep"]
     else:
         return ALL_DANCES
+
+
+def select_song(dance, song_length):
+    """ Return video ID of a randomly selected song """
+    # get list of tracks and metadata from tracks.json
+    dir_path = generate_dir_path(dance)
+    tracks = extract_song_list(dir_path)
+    # filter the tracks of correct length
+    applicable_tracks = []
+    if song_length == "long":
+        min_length, max_length = 115, 130
+    else:
+        min_length, max_length = 90, 115
+    for track in tracks:
+        if min_length <= track["duration"] <= max_length:
+            applicable_tracks.append(track["videoId"]) 
+    # randomly select a song out of the applicable tracks
+    return random.choice(applicable_tracks)
 
     
 def set_up_downloads(playlist_ids):
@@ -180,6 +216,11 @@ def set_up_downloads(playlist_ids):
             json.dump(tracks, f)
         # download the tracks
         download_yt_tracks(tracks, dance)
+
+
+def take_break(dance, dances, pause_length):
+    #TODO
+    return
 
 
 if __name__ == "__main__":
