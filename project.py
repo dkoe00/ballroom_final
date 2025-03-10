@@ -293,17 +293,34 @@ def select_relevant_dances(level):
 
 def select_song(dir_path, song_length):
     """ Return video ID of a randomly selected song """
+    
+    if not isinstance(dir_path, str):
+        raise ValueError("Invalid input: dir_path must be a string")
+
+    if song_length not in ["long", "normal"]:
+        raise ValueError("Invalid input: song_length must be long or normal")
+    
     # get list of tracks and metadata from tracks.json
     tracks = extract_song_list(dir_path)
+
+    if not isinstance(tracks, list):
+        raise ValueError("Invalid track data: Expected a list of tracks")
+
     # filter the tracks of correct length
-    applicable_tracks = []
     if song_length == "long":
         min_length, max_length = 115, 130
     else:
         min_length, max_length = 90, 115
-    for track in tracks:
-        if min_length <= track["duration"] <= max_length:
-            applicable_tracks.append(track["videoId"]) 
+
+    applicable_tracks = [
+        track["videoId"] for track in tracks:
+        if isinstance(track, dict) and "videoId" in track and "duration" in track and 
+        isinstance(track["duration"], (int, float)) and  min_length <= track["duration"] <= max_length
+    ]
+
+    if not applicable_tracks:
+        raise ValueError("No applicable tracks found for the given song length")
+
     # randomly select a song out of the applicable tracks
     return random.choice(applicable_tracks)
 

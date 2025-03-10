@@ -239,9 +239,33 @@ def test_select_relevant_dances():
         select_relevant_dances("")
 
 
+def test_select_song():
+    
+    with pytest.raises(ValueError):
+        select_song(123, "long")
+        select_song("test_dir", "short")
 
+    os.makedirs("test_dir", exist_ok=True)
+    valid_data = [
+        {"videoId": "abc123", "duration": 120},
+        {"videoId": "def456", "duration": 95}
+    ]
+    with open("test_dir/tracks.json", "w") as f:
+        json.dump(valid_data, f)
 
+    with patch("random.choice", return_value="abc123"):
+        assert select_song("test_dir", "long") == "abc123"
 
+    with patch("random.choice", return_value="def456"):
+        assert select_song("test_dir", "normal") == "def456"
 
+    with open("test_dir/tracks.json", "w") as f:
+        json.dump([{"videoId": "xyz789", "duration": 150}], f)
+
+    with pytest.raises(ValueError):
+        select_song("test_dir", "long")
+
+    os.remove("test_dir/tracks.json")
+    os.rmdir("test_dir")
 
 
