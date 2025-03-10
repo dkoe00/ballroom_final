@@ -18,6 +18,7 @@ from project import (
     set_up_downloads, 
     take_break
 )
+from unittest.mock import patch
 
 
 def test_check_for_songs():
@@ -153,3 +154,36 @@ def test_generate_dir_path():
         generate_dir_path(123)
         generate_dir_path("")
         generate_dir_path("   ")
+
+
+def test_parse_arguments():
+
+    with patch.object(sys, "argv", ["script.py"]):
+        assert parse_arguments() == (False, "b", "normal", 30)
+
+    with patch.object(sys, "argv", ["script.py", "--download"]):
+        assert parse_arguments() == (True, "b", "normal", 30)
+
+    with patch.object(sys, "argv", ["script.py", "--klasse", "c"]):
+        assert parse_arguments() == (False, "c", "normal", 30)
+
+    with patch.object(sys, "argv", ["script.py", "--length", "long"]):
+        assert parse_arguments() == (False, "b", "long", 30)
+
+    with patch.object(sys, "argv", ["script.py", "--pause", "45"]):
+        assert parse_arguments() == (False, "b", "normal", 45)
+
+    with patch.object(sys, "argv", ["script.py", "--download", "--klasse", "d", "--length", "long", "--pause", "60"]):
+        assert parse_arguments() == (True, "d", "long", 60)
+
+    with patch.object(sys, "argv", ["script.py", "--klasse", "x"]):
+        assert parse_arguments() == (False, "b", "normal", 30)
+
+    with patch.object(sys, "argv", ["script.py", "--length", "short"]):
+        assert parse_arguments() == (False, "b", "normal", 30)
+
+    with patch.object(sys, "argv", ["script.py", "--pause", "-5"]):
+        assert parse_arguments() == (False, "b", "normal", 30)
+
+
+

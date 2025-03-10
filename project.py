@@ -249,13 +249,12 @@ def parse_arguments():
 
     args = parser.parse_args()
 
-    # handle optional arguments
-    download = args.download
-    level = args.klasse if args.klasse else "b"
-    song_length = args.length if args.length else "normal"
-    pause_length = args.pause if args.pause else 30
+    # set defaults
+    level = args.klasse if args.klasse in ["d", "c", "b"] else "b"
+    song_length = args.length if args.length in ["long", "normal"] else "normal"
+    pause_length = args.pause if args.pause is not None and args.pause >= 0 else 30
 
-    return download, level, song_length, pause_length
+    return args.download, level, song_length, pause_length
 
 
 def play_song(dir_path, song):
