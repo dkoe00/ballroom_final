@@ -112,7 +112,6 @@ def download_audio(url, dir_path):
 
 def download_yt_tracks(tracks, dance):
     """ Download the specified tracks into the relevant folder """
-    #TODO
     dir_path = generate_dir_path(dance)
     for track in tracks:
         url = construct_video_url(track)
