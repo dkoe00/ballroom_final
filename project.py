@@ -189,13 +189,18 @@ def download_yt_tracks(tracks, dance):
 
 def extract_playlist_ids(playlists):
     """ Extract YouTube Playlist IDs from URLs """
+
+    if not isinstance(playlists, list) or not all(isinstance(p, str) for p in playlists):
+        raise ValueError("Invalid input: playlists must be a list of strings")
+
     playlist_ids = []
     for playlist in playlists:
         match = re.search(r"[?&]list=([^&]+)", playlist)
         if match:
             playlist_ids.append(match.group(1))
         else:
-            sys.exit(f"Invalid playlist URL: {playlist}")
+            raise ValueError(f"Invalid playlist URL: {playlist}")
+        
     return playlist_ids
 
 

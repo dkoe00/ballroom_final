@@ -96,8 +96,21 @@ def test_download_yt_tracks():
         download_yt_tracks([123, {"videoId": "abc123"}], "slow_waltz")
 
 
+def test_extract_playlist_ids():
 
+    assert extract_playlist_ids(["https://www.youtube.com/playlist?list=PL123"]) == ["PL123"]
 
+    assert extract_playlist_ids([
+        "https://www.youtube.com/playlist?list=PL123",
+        "https://www.youtube.com/watch?v=xyz&list=PL456",
+        "https://www.youtube.com/playlist?list=PL789&feature=share"
+    ]) == ["PL123", "PL456", "PL789"]
+
+    with pytest.raises(ValueError):
+        extract_playlist_ids("not_a_list")
+        extract_playlist_ids([123, "https://www.youtube.com/playlist?list=PL123"])
+        extract_playlist_ids(["https://www.youtube.com/watch?v=xyz"])
+        extract_playlist_ids(["https://www.example.com/not_youtube"])
 
 
 
