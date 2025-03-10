@@ -109,7 +109,6 @@ def clear_directories(dances):
         except OSError as e:
             logging.error(f"Error accessing directory {dir_path}: {e}")
 
-    return
 
 
 def construct_video_url(track):
@@ -168,16 +167,24 @@ def download_audio(url, dir_path):
         logging.error(f"Download failed for {url}: {e}")
         raise
 
-    return
-
 
 def download_yt_tracks(tracks, dance):
     """ Download the specified tracks into the relevant folder """
+
+    if not isinstance(tracks, list) or not all(isinstance(track, dict) for track in tracks):
+        raise ValueError("Invalid input: tracks must be a list of dictionaries")
+
+    if not isinstance(dance, str):
+        raise ValueError("Invalid input: dance must be a string")
+
     dir_path = generate_dir_path(dance)
+    
     for track in tracks:
-        url = construct_video_url(track)
-        download_audio(url, dir_path)
-    return
+        try:
+            url = construct_video_url(track)
+            download_audio(url, dir_path)
+        except Exception as e:
+            logging.error(f"Failed to download {track}: {e}")
 
 
 def extract_playlist_ids(playlists):
@@ -231,7 +238,6 @@ def play_song(dir_path, song):
     """ Plays the given song with mpv """
     path_to_mp3 = f"{dir_path}/{song}.mp3"
     subprocess.run(["mpv", "--no-terminal", "--quiet", path_to_mp3])
-    return
 
 
 def select_relevant_dances(level):
@@ -289,7 +295,6 @@ def take_break(dance, dances, pause_length):
     """ Wait the specified time if appropriate """
     if 3 <= len(dances) <= 5 and dance != "quickstep":
         time.sleep(pause_length)
-    return
 
 
 if __name__ == "__main__":

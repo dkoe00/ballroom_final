@@ -86,3 +86,21 @@ def test_download_audio():
         download_audio("not_a_url", "test_dir")
         download_audio("https://example.com/video", "test_dir")
         download_audio("https://www.youtube.com/watch?v=abc123", 123)
+
+
+def test_download_yt_tracks():
+
+    with pytest.raises(ValueError):
+        download_yt_tracks("not_a_list", "slow_waltz")
+        download_yt_tracks([{"videoId": "abc123"}], 123)
+        download_yt_tracks([123, {"videoId": "abc123"}], "slow_waltz")
+
+
+
+
+
+
+
+
+
+
