@@ -34,6 +34,7 @@ def main():
     ]
     if any(not playlist for playlist in playlists):
         sys.exit("Please provide playlist URLs for each dance in .env file")
+
     playlist_ids = extract_playlist_ids(playlists)
     download, level, song_length, pause_length = parse_arguments()
     dances = select_relevant_dances(level)
