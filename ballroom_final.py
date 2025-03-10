@@ -9,6 +9,14 @@ from dotenv import load_dotenv
 from ytmusicapi import YTMusic
 
 
+ALL_DANCES = [
+        "slow_waltz",
+        "tango",
+        "viennese_waltz",
+        "slow_foxtrot",
+        "quickstep"
+    ]
+
 def main():
     
     # get environment variables, command line arguments and other setup
@@ -25,21 +33,15 @@ def main():
     playlist_ids = extract_playlist_ids(playlists)
     ytmusic = YTMusic()
     download, level, song_length, pause_length = parse_arguments()
-    dances = [
-        "slow_waltz",
-        "tango",
-        "viennese_waltz",
-        "slow_foxtrot",
-        "quickstep"
-    ]
+    dances = select_relevant_dances(level)
 
     # check for the presence of directories and songs for each dance
     songs_present = check_for_songs(dances)
 
     # download songs if the download flag is given or any dance directory was empty
     if download or any(not songs_present[dance] for dance in dances): 
-        clear_directories(dances)
-        for index, dance in enumerate(dances):
+        clear_directories(ALL_DANCES)
+        for index, dance in enumerate(ALL_DANCES):
             # select correct playlist and retrieve information about its tracks
             playlist_id = playlist_ids[index]
             playlist = ytmusic.get_playlist(playlistId=playlist_id, limit=None)
@@ -165,5 +167,15 @@ def parse_arguments():
     return download, level, song_length, pause_length
 
 
+def select_relevant_dances(level):
+    """ Return a list of the relevant dances for the given level """
+    if level == "d":
+        return ["slow_waltz", "tango", "quickstep"]
+    elif level == "c":
+        return ["slow_waltz", "tango", "slow_foxtrot", "quickstep"]
+    else:
+        return ALL_DANCES
+
+    
 if __name__ == "__main__":
     main()
