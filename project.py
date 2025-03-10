@@ -1,5 +1,6 @@
 import argparse
 import json
+import logging
 import os
 import random
 import re
@@ -54,18 +55,29 @@ def main():
 
 def check_for_songs(dances):
     """ Check if downloaded songs are present for each dance and return a dict with boolean values """
+
+    if not isinstance(dances, list) or not all(isinstance(d, str) for d in dances):
+        raise ValueError("Invalid input: dances must be a list of strings")
+
     songs_present = {}
+
     for dance in dances:
-        dir_path = generate_dir_path(dance)
-        if not os.path.exists(dir_path):
-            os.makedirs(dir_path)
-            songs_present[dance] = False
-        else:
-            matching_files = [f for f in os.listdir(dir_path) if f.endswith((".mp3"))]
-            if matching_files:
-                songs_present[dance] = True
-            else:
+        try:
+            dir_path = generate_dir_path(dance)
+            if not os.path.exists(dir_path):
+                os.makedirs(dir_path)
                 songs_present[dance] = False
+            else:
+                try:
+                    matching_files = [f for f in os.listdir(dir_path) if f.endswith(".mp3")]
+                    songs_present[dance] = bool(matching_files)
+                except OSError as e:
+                    logging.error(f"Error accessing files in {dir_path}: {e}")
+                    songs_present[dance] = False
+        except OSError as e:
+            logging.error(f"Error handling directory {dance}: {e}")
+            songs_present[dance] = False
+
     return songs_present
 
 
