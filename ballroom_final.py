@@ -129,7 +129,8 @@ def extract_playlist_ids(playlists):
 
 def extract_song_list(dir_path):
     """ Returns the list of tracks stored in JSON in the given directory """
-    #TODO
+    with open(f"{dir_path}/tracks.json", "r") as f:
+        tracks = json.load(f)
     return tracks
 
 
