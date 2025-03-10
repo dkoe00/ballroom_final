@@ -93,7 +93,9 @@ def construct_video_url(track):
     
 def download_audio(url, dir_path):
     """ Download a YouTube video as a .mp3 audio file """
-    output_template = os.path.join(dir_path, "%(title)s.mp3")
+    # save file with video id as file name to find it later
+    video_id = url.split("v=")[-1].split("&")[0]
+    output_template = os.path.join(dir_path, f"{video_id}.mp3")
     ydl_opts = {
         "format": "bestaudio",
         "outtmpl": output_template,
@@ -105,7 +107,7 @@ def download_audio(url, dir_path):
     }
     with yt_dlp.YoutubeDL(ydl_opts) as video:
         video.download([url])
-    #TODO
+    return
 
 
 def download_yt_tracks(tracks, dance):
