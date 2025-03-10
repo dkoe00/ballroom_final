@@ -40,3 +40,39 @@ def test_check_for_songs():
 
     os.remove("test_dance_1/song.mp3")
     os.rmdir("test_dance_1")
+
+
+def test_clear_directories():
+
+    with pytest.raises(ValueError):
+        clear_directories("not_a_list")
+        clear_directories([123, "valid_dance"])
+
+    os.makedirs("test_dance_2", exist_ok=True)
+    with open("test_dance_2/song.mp3", "w") as f:
+        f.write("dummy data")
+
+    with open("test_dance_2/other_file.txt", "w") as f:
+        f.write("dummy data")
+
+    assert os.path.exists("test_dance_2/song.mp3")
+    assert os.path.exists("test_dance_2/other_file.txt")
+
+    clear_directories(["test)dance)2"])
+
+    assert not os.path.exists("test_dance_2/song.mp3")
+    assert not os.path.exists("test_dance_2/other_file.txt")
+    assert os.path.exists("test_dance_2")
+
+    os.rmdir("test_dance_2")
+
+
+
+
+
+
+
+
+
+
+

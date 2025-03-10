@@ -83,17 +83,32 @@ def check_for_songs(dances):
 
 def clear_directories(dances):
     """ Delete all files from the directories of each dance """
+
+    if not isinstance(dances, list) or not all(isinstance(d, str) for d in dances):
+        raise ValueError("Invalid input: dances must be a list of strings")
+
     for dance in dances:
-        dir_path = generate_dir_path(dance)
-        files = os.listdir(dir_path)
-        if files:
+        try:
+            dir_path = generate_dir_path(dance)
+
+            if not os.path.exists(dir_path):
+                logging.warning(f"Directory {dir_path} does not exist, skipping.")
+                continue
+
+            files = os.listdir(dir_path)
+
             for file in files:
                 file_path = os.path.join(dir_path, file)
                 if os.path.isfile(file_path):
                     try:
                         os.remove(file_path)
+                    except OSError as e:
+                        logging.error(f"Failed to delete {file_path}: {e}")
                     except FileNotFoundError:
                         pass
+        except OSError as e:
+            logging.error(f"Error accessing directory {dir_path}: {e}")
+
     return
 
 
