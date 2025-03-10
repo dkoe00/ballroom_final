@@ -17,6 +17,7 @@ The system supports five standard ballroom dances:
 - **Reliable Playback**: Uses `mpv` for seamless playback without interruptions.
 - **Error Handling & Logging**: Ensures robust error management and logging for troubleshooting.
 
+#### Video Demo: [YouTube](https://youtu.be/QbHGec2kiUE)
 ## Installation
 ### Prerequisites
 Ensure the following dependencies are installed:
