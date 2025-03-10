@@ -259,8 +259,16 @@ def parse_arguments():
 
 def play_song(dir_path, song):
     """ Plays the given song with mpv """
-    path_to_mp3 = f"{dir_path}/{song}.mp3"
-    subprocess.run(["mpv", "--no-terminal", "--quiet", path_to_mp3])
+
+    if not isinstance(dir_path, str) or not isinstance(song, str):
+        raise ValueError("Invalid input: dir_path and song must be strings")
+
+    path_to_mp3 = os.path.join(dir_path, f"{song}.mp3")
+
+    try:    
+        subprocess.run(["mpv", "--no-terminal", "--quiet", path_to_mp3], check=True)
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Error playing song: {e}")
 
 
 def select_relevant_dances(level):

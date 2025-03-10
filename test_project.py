@@ -186,4 +186,22 @@ def test_parse_arguments():
         assert parse_arguments() == (False, "b", "normal", 30)
 
 
+def test_play_song():
 
+    with pytest.raises(ValueError):
+        play_song(123, "song")
+        play_song("test_dir", 123)
+
+    with pytest.raises(FileNotFoundError):
+        play_song("non_existent_dir", "song")
+
+    os.makedirs("test_dir", exist_ok=True)
+    with open("test_dir/song.mp3", "w") as f:
+        f.write("dummy data")
+
+    with patch("subprocess.run") as mock_run:
+        play_song("test_dir", "song")
+        mock_run.assert_called_once_with(["mpv", "--no-terminal", "--quiet", "test_dir/song.mp3"], check=True)
+
+    os.remove("test_dir/song.mp3")
+    os.rmdir("test_dir")
