@@ -269,3 +269,79 @@ def test_select_song():
     os.rmdir("test_dir")
 
 
+def test_set_up_downloads():
+    
+    with pytest.raises(ValueError):
+        set_up_downloads("not_a_list")
+        set_up_downloads(["PL123"])
+
+    fake_playlists = [
+        {
+            "tracks": [
+                {"title": "Song 1", "videoId": "abc123", "duration_seconds": 120},
+                {"title": "Song 2", "videoId": "def456", "duration_seconds": 95}
+            ]
+        }
+    ] * len(ALL_DANCES)
+
+    with patch("project.YTMusic.get_playlist", side_effect=fake_playlists), \
+         patch("project.clear_directories"), \
+         patch("project.generate_dir_path", return_value="test_dir"), \
+         patch("project.download_yt_tracks") as mock_download:
+
+        set_up_downloads(["PL123"] * len(ALL_DANCES))
+
+        assert mock_download.call_count == len(ALL_DANCES)
+
+
+def test_take_break():
+    
+    with pytest.raises(ValueError):
+        take_break(123, ["slow_waltz", "tango"], 30)
+        take_break("slow_waltz", "not_a_list", 30)
+        take_break("slow_waltz", ["slow_waltz", "tango"], -10)
+
+    with patch("time.sleep") as mock_sleep:
+        take_break("slow_waltz", ["slow_waltz", "tango", "quickstep"], 30)
+        mock_sleep.assert_called_once_with(30)
+
+    with patch("time.sleep") as mock_sleep:
+        take_break("quickstep", ["slow_waltz", "tango", "quickstep"], 30)
+        mock_sleep.assert_not_called()
+
+    with patch("time.sleep") as mock_sleep:
+        take_break("tango", ["slow_waltz", "tango"], 30)
+        mock_sleep.assert_not_called()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
