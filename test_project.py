@@ -145,4 +145,11 @@ def test_extract_song_list():
     os.rmdir("test_dir")
 
 
+def test_generate_dir_path():
 
+    assert generate_dir_path("slow_waltz") == os.path.join(os.getcwd(), "slow_waltz")
+
+    with pytest.raises(ValueError):
+        generate_dir_path(123)
+        generate_dir_path("")
+        generate_dir_path("   ")

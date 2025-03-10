@@ -230,9 +230,11 @@ def extract_song_list(dir_path):
 
 def generate_dir_path(dance):
     """ Return the path to the directory of a given dance """
-    this_dir = os.getcwd()
-    dir_name = dance
-    return os.path.join(this_dir, dir_name)
+
+    if not isinstance(dance, str) or not dance.strip():
+        raise ValueError("Invalid input: dance must be a non-empty string")
+
+    return os.path.join(os.getcwd(), dance)
 
 
 def parse_arguments():
