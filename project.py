@@ -114,6 +114,13 @@ def clear_directories(dances):
 
 def construct_video_url(track):
     """ Return the YouTube video URL for a given track as a string """
+    
+    if not isinstance(track, dict):
+        raise ValueError("Invalid input: track must be a dictionary")
+
+    if "videoId" nor in track or not isinstance(track["videoId"], str):
+        raise KeyError("Invalid track data: 'videoId' key missing or not a string")
+
     return f"https://www.youtube.com/watch?v={track["videoId"]}"
 
     

@@ -67,10 +67,17 @@ def test_clear_directories():
     os.rmdir("test_dance_2")
 
 
+def test_construct_video_url():
 
+    assert construct_video_url({"videoId": "abc123"}) == "https://www.youtube.com/watch?v=abc123"
 
+    with pytest.raises(ValueError):
+        construct_video_url("not_a_dict")
+        construct_video_url(123)
 
-
+    with pytest.raises(KeyError):
+        construct_video_url({})
+        construct_video_url({"videoId": 123})
 
 
 
