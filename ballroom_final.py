@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import re
+import sys
 import yt_dlp
 
 from dotenv import load_dotenv
@@ -19,6 +20,8 @@ def main():
         os.getenv("SLOW_FOXTROT_URL"), 
         os.getenv("QUICKSTEP_URL"), 
     ]
+    if any(not playlist for playlist in playlists):
+        sys.exit("Please provide playlist URLs for each dance in .env file")
     playlist_ids = extract_playlist_ids(playlists)
     ytmusic = YTMusic()
     download, level, song_length, pause_length = parse_arguments()
@@ -82,13 +85,16 @@ def clear_directories(dances):
             for file in files:
                 file_path = os.path.join(dir_path, file)
                 if os.path.isfile(file_path):
-                    os.remove(file_path)
+                    try:
+                        os.remove(file_path)
+                    except FileNotFoundError:
+                        pass
     return
 
 
 def construct_video_url(track):
     """ Return the YouTube video URL for a given track as a string """
-    return f"https://www.youtube.com/watch?v={track.videoId}"
+    return f"https://www.youtube.com/watch?v={track[videoId]}"
 
     
 def download_audio(url, dir_path):
@@ -133,7 +139,7 @@ def extract_playlist_ids(playlists):
 
 def generate_dir_path(dance):
     """ Return the path to the directory of a given dance """
-    this_dir = os.path.dirname(os.path.abspath(__file__))
+    this_dir = os.getcwd()
     dir_name = dance
     return os.path.join(this_dir, dir_name)
 
