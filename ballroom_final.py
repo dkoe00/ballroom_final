@@ -44,8 +44,9 @@ def main():
 
     # select and play songs for the final
     for dance in dances:
-        song = select_song(dance, song_length)
-        play_song(song)
+        dir_path = generate_dir_path(dance)
+        song = select_song(dir_path, song_length)
+        play_song(dir_path, song)
         take_break(dance, dances, pause_length)
 
 
@@ -162,8 +163,9 @@ def parse_arguments():
     return download, level, song_length, pause_length
 
 
-def play_song(song):
+def play_song(dir_path, song):
     #TODO
+    path_to_mp3 = f"{dir_path}/{song}.mp3"
     return
 
 
@@ -177,10 +179,9 @@ def select_relevant_dances(level):
         return ALL_DANCES
 
 
-def select_song(dance, song_length):
+def select_song(dir_path, song_length):
     """ Return video ID of a randomly selected song """
     # get list of tracks and metadata from tracks.json
-    dir_path = generate_dir_path(dance)
     tracks = extract_song_list(dir_path)
     # filter the tracks of correct length
     applicable_tracks = []
