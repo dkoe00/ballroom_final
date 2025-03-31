@@ -3,12 +3,21 @@
 ## Overview
 This Python-based application is designed to automate the music selection process for ballroom dance finals. It ensures that the correct sequence of dance music is played with appropriate breaks, allowing dancers and organizers to focus on the competition or training rather than managing music manually.
 
-The system supports five standard ballroom dances:
+The system supports five standard and latin ballroom dances, respectively:
+
 - Slow Waltz
 - Tango
 - Viennese Waltz
 - Slow Foxtrot
 - Quickstep
+
+or
+
+- Samba
+- ChaCha
+- Rumba
+- Paso
+- Jive
 
 ## Features
 - **Automated Song Selection**: Randomly selects a song from pre-defined YouTube Music playlists for each dance.
@@ -50,6 +59,11 @@ pip install -r requirements.txt
      VIENNESE_WALTZ_URL=https://music.youtube.com/playlist?list=...
      SLOW_FOXTROT_URL=https://music.youtube.com/playlist?list=...
      QUICKSTEP_URL=https://music.youtube.com/playlist?list=...
+     SAMBA_URL=https://music.youtube.com/playlist?list=...
+     CHACHA_URL=https://music.youtube.com/playlist?list=...
+     RUMBA_URL=https://music.youtube.com/playlist?list=...
+     PASO_URL=https://music.youtube.com/playlist?list=...
+     JIVE_URL=https://music.youtube.com/playlist?list=...
      ```
 3. **Run the Program:**
    ```bash
@@ -66,12 +80,13 @@ python ballroom_final.py [OPTIONS]
 - `-k`, `--klasse` : Specify competition level (`d`, `c`, `b`). Default: `b` for all five dance styles.
 - `-l`, `--length` : Choose song length (`long` for 1:50-2:10, `normal` for 1:30-1:50). Default: `normal`.
 - `-p`, `--pause` : Specify pause duration in seconds between songs. Default: `30` seconds.
+- `-s`, `--section` : Specify if standard or latin. Default: `standard`
 
 **Example:**
 ```bash
-python ballroom_final.py -d -k c -l long -p 45 
+python ballroom_final.py -d -k c -l long -p 45 -s latin
 ```
-This redownloads all songs, plays for class `C`, selects long songs, and introduces a 45-second pause between tracks.
+This redownloads all songs and plays a latin final for class `C`, selects long songs, and introduces a 45-second pause between tracks.
 
 ## Technical Documentation
 ### Error Handling
