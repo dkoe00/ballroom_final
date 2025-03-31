@@ -5,7 +5,6 @@ import os
 import random
 import re
 import subprocess
-import sys
 import yt_dlp
 
 from dotenv import load_dotenv
@@ -213,28 +212,6 @@ def generate_dir_path(dance):
     return os.path.join(os.getcwd(), dance)
 
 
-def parse_arguments():
-    """ Parse optional command line arguments and return default values if not given """
-    
-    # create a list of given arguments
-    parser = argparse.ArgumentParser(description="Play ballroom final music")
-    parser.add_argument("--download", "-d", help="Download all songs from playlists first", action="store_true")
-    parser.add_argument("--klasse", "-k", help="Specify the class of the final (d, c, b for b and up)", type=str)
-    parser.add_argument("--length", "-l", help="Specify length of songs (long for 1:50-2:10, normal for 1:30-1:50)", type=str)
-    parser.add_argument("--pause", "-p", help="Specify pause time between titles in seconds", type=int)
-    parser.add_argument("--section", "-s", help="Specify if you want a standard or latin final", type=str)
-
-    args = parser.parse_args()
-
-    # set defaults
-    level = args.klasse.lower() if args.klasse.lower() in ["d", "c", "b"] else "b"
-    song_length = args.length.lower() if args.length.lower() in ["long", "normal"] else "normal"
-    pause_length = args.pause if args.pause is not None and args.pause >= 0 else 30
-    section = args.section.lower() if args.pause.lower() in ["standard", "latin"] else "standard"
-
-    return args.download, level, song_length, pause_length, section
-
-
 def play_song(dir_path, song):
     """ Plays the given song with mpv """
 
@@ -250,6 +227,58 @@ def play_song(dir_path, song):
         subprocess.run(["mpv", "--no-terminal", "--quiet", path_to_mp3], check=True)
     except subprocess.CalledProcessError as e:
         raise RuntimeError(f"Error playing song: {e}")
+
+
+def refresh_downloads(playlist_ids, dances):
+    """ Clear dance style directories and fill them with current content of playlists """    
+
+    if not isinstance(playlist_ids, list) or not all(isinstance(pid, str) for pid in playlist_ids):
+        raise ValueError("Invalid input: playlist_ids must be a list of strings")
+    
+    if not isinstance(dances, list) or not all(isinstance(d, str) for d in dances):
+        raise ValueError("Invalid input: dances must be a list of strings")
+
+    if len(playlist_ids) != len(dances):
+        raise ValueError(f"Mismatch: Expected {len(dances)} playlist IDs but got {len(playlist_ids)}")
+
+    clear_directories(dances)
+
+    for index, dance in enumerate(dances):
+        try:
+
+            # select correct playlist and retrieve information about its tracks
+            playlist_id = playlist_ids[index]
+            ytmusic = YTMusic()
+            playlist = ytmusic.get_playlist(playlistId=playlist_id, limit=None)
+
+            if not playlist or "tracks" not in playlist:
+                raise ValueError(f"Playlist {playlist_id} does not contain track data")
+    
+            # save a metadata.json file with track title, videoId, and duration in seconds for all tracks
+            tracks = [
+                {
+                    "title": track["title"],
+                    "index": i, 
+                    "videoId": track["videoId"],
+                    "duration": track["duration_seconds"]
+                }
+                for i, track in enumerate(playlist["tracks"])
+                if "videoId" in track and isinstance(track.get("duration_seconds"), (int, float))
+            ]
+
+            if not tracks:
+                raise ValueError(f"No valid tracks found in playlist {playlist_id}")
+
+            dir_path = generate_dir_path(dance)
+            os.makedirs(dir_path, exist_ok=True)
+            with open(os.path.join(dir_path, "tracks.json"), "w") as f:
+                json.dump(tracks, f)
+        
+            # download the tracks
+            download_yt_tracks(tracks, dance)
+
+        except Exception as e:
+            logging.error(f"Error processing playlist {playlist_id} for dance {dance}: {e}")
 
 
 def select_relevant_dances(level, section):
@@ -366,51 +395,15 @@ def select_song(dir_path, song_length):
     return random.choice(applicable_tracks)
 
     
-def set_up_downloads(playlist_ids):
-    """ Clear dance style directories and fill them with current content of playlists """    
-
-    if not isinstance(playlist_ids, list) or not all(isinstance(pid, str) for pid in playlist_ids):
-        raise ValueError("Invalid input: playlist_ids must be a list of strings")
+def set_up_downloads(download, dances, playlist_ids):
+    """ Download songs if necessary """
     
-    if len(playlist_ids) != len(ALL_DANCES):
-        raise ValueError(f"Mismatch: Expected {len(ALL_DANCES)} playlist IDs but got {len(playlist_ids)}")
+    if not isinstance(dances, list) or not all(isinstance(d, str) for d in dances):
+        raise ValueError("Invalid input: dances must be a list of strings")
 
-    clear_directories(ALL_DANCES)
+    songs_present = check_for_songs(dances)
+    if download or any(not songs_present[dance] for dance in dances):
+        refresh_downloads(playlist_ids, dances)
 
-    for index, dance in enumerate(ALL_DANCES):
-        try:
 
-            # select correct playlist and retrieve information about its tracks
-            playlist_id = playlist_ids[index]
-            ytmusic = YTMusic()
-            playlist = ytmusic.get_playlist(playlistId=playlist_id, limit=None)
-
-            if not playlist or "tracks" not in playlist:
-                raise ValueError(f"Playlist {playlist_id} does not contain track data")
-    
-            # save a metadata.json file with track title, videoId, and duration in seconds for all tracks
-            tracks = [
-                {
-                    "title": track["title"],
-                    "index": i, 
-                    "videoId": track["videoId"],
-                    "duration": track["duration_seconds"]
-                }
-                for i, track in enumerate(playlist["tracks"])
-                if "videoId" in track and isinstance(track.get("duration_seconds"), (int, float))
-            ]
-
-            if not tracks:
-                raise ValueError(f"No valid tracks found in playlist {playlist_id}")
-
-            dir_path = generate_dir_path(dance)
-            os.makedirs(dir_path, exist_ok=True)
-            with open(os.path.join(dir_path, "tracks.json"), "w") as f:
-                json.dump(tracks, f)
-        
-            # download the tracks
-            download_yt_tracks(tracks, dance)
-
-        except Exception as e:
-            logging.error(f"Error processing playlist {playlist_id} for dance {dance}: {e}")
 

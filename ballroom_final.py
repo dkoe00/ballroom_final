@@ -1,7 +1,15 @@
 import argparse
 import time
 
-from helpers import
+from helpers import (
+    extract_playlist_ids,
+    generate_dir_path,
+    play_song,
+    select_relevant_dances,
+    select_relevant_playlists,
+    select_song,
+    set_up_downloads
+)
 
 
 def main():
@@ -11,17 +19,13 @@ def main():
     playlists = select_relevant_playlists(section)
 
     if any(not playlist for playlist in playlists):
-        sys.exit("Please provide playlist URLs for each dance in .env file")
+        raise ValueError("Please provide playlist URLs for each dance in .env file")
 
     playlist_ids = extract_playlist_ids(playlists)
     dances = select_relevant_dances(level, section)
 
-    # check for the presence of directories and songs for each dance
-    songs_present = check_for_songs(dances)
-
     # download songs if the download flag is given or any dance directory was empty
-    if download or any(not songs_present[dance] for dance in dances): 
-        set_up_downloads(playlist_ids)
+    set_up_downloads(download, dances, playlist_ids)
 
     # select and play songs for the final
     for dance in dances:
