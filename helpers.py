@@ -241,6 +241,7 @@ def play_song(dir_path, song):
 
 def select_relevant_dances(level, section):
     """ Return a list of the relevant dances for the given level and section """
+    
     if not isinstance(level, str):
         raise ValueError("Invalid input: level must be a string")
     if not isinstance(section, str):
@@ -266,6 +267,56 @@ def select_relevant_dances(level, section):
             raise ValueError(f"Invalid level: {level}. Must be d, c, or b.")
     else:
         raise ValueError(f"Invalic section: {section}. Must be standard or latin.")
+
+
+def select_relevant_playlists(scope):
+    """ Return a list with either a specific url or a list of urls """
+    
+    if not isinstance(scope, str):
+        raise ValueError("Invalid input: scope must be a string")
+
+    load_dotenv()
+    if any(not playlist for playlist in playlists):
+        sys.exit("Please provide playlist URLs for each dance in .env file")
+
+    if scope == "standard":
+        return [
+            os.getenv("SLOW_WALTZ_URL"), 
+            os.getenv("TANGO_URL"), 
+            os.getenv("VIENNESE_WALTZ_URL"), 
+            os.getenv("SLOW_FOXTROT_URL"), 
+            os.getenv("QUICKSTEP_URL"), 
+        ]
+    elif scope == "latin":
+        return [
+            os.getenv("SAMBA_URL"),
+            os.getenv("CHACHA_URL"),
+            os.getenv("RUMBA_URL"),
+            os.getenv("PASO_URL"),
+            os.getenv("JIVE_URL")
+        ]
+    elif scope == "slow_waltz":
+        return [os.getenv("SLOW_WALTZ_URL")]
+    elif scope == "tango":
+        return [os.getenv("TANGO_URL")]
+    elif scope == "viennese_waltz":
+        return [os.getenv("VIENNESE_WALTZ_URL")]
+    elif scope == "slow_foxtrot":
+        return [os.getenv("SLOW_FOXTROT_URL")]
+    elif scope == "quickstep":
+        return [os.getenv("QUICKSTEP_URL")]
+    elif scope == "samba":
+        return [os.getenv("SAMBA_URL")]
+    elif scope == "chacha":
+        return [os.getenv("CHACHA_URL")]
+    elif scope == "rumba":
+        return [os.getenv("RUMBA_URL")]
+    elif scope == "paso":
+        return [os.getenv("PASO_URL")]
+    elif scope == "jive":
+        return [os.getenv("JIVE_URL")]
+    else:
+        raise ValueError("Invalid input: scope must be a section or dance style")
 
 
 def select_song(dir_path, song_length):
