@@ -1,17 +1,7 @@
 import argparse
-import json
-import logging
-import os
-import random
-import re
-import subprocess
-import sys
 import time
-import yt_dlp
 
-from dotenv import load_dotenv
 from helpers import
-from ytmusicapi import YTMusic
 
 
 def main():
@@ -75,7 +65,7 @@ def take_break(dance, dances, pause_length):
     if not isinstance(pause_length, (int, float)) or pause_length < 0:
         raise ValueError("Invalid input: pause_length must be a non-negative number")
 
-    if 3 <= len(dances) <= 5 and dance != "quickstep":
+    if 3 <= len(dances) <= 5 and dance not in ["quickstep", "jive"]:
         time.sleep(pause_length)
 
 

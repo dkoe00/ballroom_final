@@ -1,3 +1,16 @@
+import argparse
+import json
+import logging
+import os
+import random
+import re
+import subprocess
+import sys
+import yt_dlp
+
+from dotenv import load_dotenv
+from ytmusicapi import YTMusic
+
 
 STANDARD_DANCES = [
         "slow_waltz",
