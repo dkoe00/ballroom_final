@@ -318,8 +318,6 @@ def select_relevant_playlists(scope):
         raise ValueError("Invalid input: scope must be a string")
 
     load_dotenv()
-    if any(not playlist for playlist in playlists):
-        sys.exit("Please provide playlist URLs for each dance in .env file")
 
     if scope == "standard":
         return [

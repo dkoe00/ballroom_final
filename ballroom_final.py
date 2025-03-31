@@ -49,10 +49,10 @@ def parse_arguments():
     args = parser.parse_args()
 
     # set defaults
-    level = args.klasse.lower() if args.klasse.lower() in ["d", "c", "b"] else "b"
-    song_length = args.length.lower() if args.length.lower() in ["long", "normal"] else "normal"
+    level = args.klasse if args.klasse in ["d", "c", "b"] else "b"
+    song_length = args.length if args.length in ["long", "normal"] else "normal"
     pause_length = args.pause if args.pause is not None and args.pause >= 0 else 30
-    section = args.section.lower() if args.pause.lower() in ["standard", "latin"] else "standard"
+    section = args.section if args.pause in ["standard", "latin"] else "standard"
 
     return args.download, level, song_length, pause_length, section
 
