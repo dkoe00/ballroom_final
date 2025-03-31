@@ -1,4 +1,22 @@
-eck_for_songs(dances):
+
+STANDARD_DANCES = [
+        "slow_waltz",
+        "tango",
+        "viennese_waltz",
+        "slow_foxtrot",
+        "quickstep"
+    ]
+
+LATIN_DANCES = [
+        "samba",
+        "chacha",
+        "rumba",
+        "paso",
+        "jive"
+    ]
+
+
+def check_for_songs(dances):
     """ Check if downloaded songs are present for each dance and return a dict with boolean values """
 
     if not isinstance(dances, list) or not all(isinstance(d, str) for d in dances):
@@ -196,10 +214,10 @@ def parse_arguments():
     args = parser.parse_args()
 
     # set defaults
-    level = args.klasse if args.klasse in ["d", "c", "b"] else "b"
-    song_length = args.length if args.length in ["long", "normal"] else "normal"
+    level = args.klasse.lower() if args.klasse.lower() in ["d", "c", "b"] else "b"
+    song_length = args.length.lower() if args.length.lower() in ["long", "normal"] else "normal"
     pause_length = args.pause if args.pause is not None and args.pause >= 0 else 30
-    section = args.section if args.pause.lower() in ["standard", "latin"] else "standard"
+    section = args.section.lower() if args.pause.lower() in ["standard", "latin"] else "standard"
 
     return args.download, level, song_length, pause_length, section
 
@@ -221,21 +239,33 @@ def play_song(dir_path, song):
         raise RuntimeError(f"Error playing song: {e}")
 
 
-def select_relevant_dances(level):
-    """ Return a list of the relevant dances for the given level """
+def select_relevant_dances(level, section):
+    """ Return a list of the relevant dances for the given level and section """
     if not isinstance(level, str):
         raise ValueError("Invalid input: level must be a string")
+    if not isinstance(section, str):
+        raise ValueError("Invalid input: section must be a string")
     
-    level = level.lower()
-
-    if level == "d":
-        return ["slow_waltz", "tango", "quickstep"]
-    elif level == "c":
-        return ["slow_waltz", "tango", "slow_foxtrot", "quickstep"]
-    elif level == "b":
-        return ALL_DANCES
+    if section == "standard":
+        if level == "d":
+            return ["slow_waltz", "tango", "quickstep"]
+        elif level == "c":
+            return ["slow_waltz", "tango", "slow_foxtrot", "quickstep"]
+        elif level == "b":
+            return STANDARD_DANCES
+        else:
+            raise ValueError(f"Invalid level: {level}. Must be d, c, or b.")
+    elif section == "latin":
+        if level == "d":
+            return ["chacha", "rumba", "jive"]
+        elif level == "c":
+            return ["samba", "chacha", "rumba", "jive"]
+        elif level == "b":
+            return LATIN_DANCES
+        else:
+            raise ValueError(f"Invalid level: {level}. Must be d, c, or b.")
     else:
-        raise ValueError(f"Invalid level: {level}. Must be d, c, or b.")
+        raise ValueError(f"Invalic section: {section}. Must be standard or latin.")
 
 
 def select_song(dir_path, song_length):

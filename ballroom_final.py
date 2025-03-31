@@ -14,14 +14,6 @@ from helpers import
 from ytmusicapi import YTMusic
 
 
-ALL_DANCES = [
-        "slow_waltz",
-        "tango",
-        "viennese_waltz",
-        "slow_foxtrot",
-        "quickstep"
-    ]
-
 def main():
     
     # get environment variables, command line arguments and other setup
