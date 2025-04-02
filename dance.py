@@ -1,8 +1,11 @@
 import argparse
 
 from helpers import (
-    #TODO
+    extract_playlist_ids,
+    generate_dir_path,
+    play_song,
     select_relevant_playlists,
+    select_song,
     set_up_downloads
 )
 
@@ -18,8 +21,13 @@ def main():
     download, length, number, style = parse_arguments()
     
     playlist = select_relevant_playlists(style, None)
-    set_up_downloads(download, [style], playlist)
-
+    playlist_id = extract_playlist_ids(playlist)
+    set_up_downloads(download, [style], playlist_id)
+    
+    dir_path = generate_dir_path(style)
+    for _ in range(number):
+        song = select_song(dir_path, length) 
+        play_song(dir_path, song)
 
 
 def parse_arguments():
