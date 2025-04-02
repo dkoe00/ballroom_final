@@ -1,5 +1,11 @@
 import argparse
 
+from helpers import (
+    #TODO
+    select_relevant_playlists,
+    set_up_downloads
+)
+
 
 VALID_STYLES = [
     "slow_waltz", "tango", "viennese_waltz", "slow_foxtrot", "quickstep",
@@ -10,8 +16,9 @@ VALID_STYLES = [
 def main():
 
     download, length, number, style = parse_arguments()
-
-
+    
+    playlist = select_relevant_playlists(style, None)
+    set_up_downloads(download, [style], playlist)
 
 
 
