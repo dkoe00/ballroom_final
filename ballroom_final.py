@@ -41,10 +41,14 @@ def parse_arguments():
     # create a list of given arguments
     parser = argparse.ArgumentParser(description="Play ballroom final music")
     parser.add_argument("--download", "-d", help="Download all songs from playlists first", action="store_true")
-    parser.add_argument("--klasse", "-k", help="Specify the class of the final (d, c, b for b and up)", type=str)
-    parser.add_argument("--length", "-l", help="Specify length of songs (long for 1:50-2:10, normal for 1:30-1:50)", type=str)
-    parser.add_argument("--pause", "-p", help="Specify pause time between titles in seconds", type=int)
-    parser.add_argument("--section", "-s", help="Specify if you want a standard or latin final", type=str)
+    parser.add_argument("--klasse", "-k", help="Specify the class of the final (d, c, b for b and up)", 
+                        type=str, default="b", choices=["b", "c", "d"])
+    parser.add_argument("--length", "-l", help="Specify length of songs (long for 1:50-2:10, normal for 1:30-1:50)", 
+                        type=str, default="normal", choices=["long", "normal"])
+    parser.add_argument("--pause", "-p", help="Specify pause time between titles in seconds", 
+                        type=int, default=30)
+    parser.add_argument("section", help="Specify if you want a standard or latin final", 
+                        type=str, choices=["standard", "latin"])
 
     args = parser.parse_args()
 
@@ -52,7 +56,7 @@ def parse_arguments():
     level = args.klasse if args.klasse in ["d", "c", "b"] else "b"
     song_length = args.length if args.length in ["long", "normal"] else "normal"
     pause_length = args.pause if args.pause is not None and args.pause >= 0 else 30
-    section = args.section if args.pause in ["standard", "latin"] else "standard"
+    section = args.section if args.section in ["standard", "latin"] else "standard"
 
     return args.download, level, song_length, pause_length, section
 
