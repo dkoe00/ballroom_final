@@ -31,7 +31,9 @@ def main():
     for dance in dances:
         dir_path = generate_dir_path(dance)
         song = select_song(dir_path, song_length)
+        print(f"Playing {dance}")
         play_song(dir_path, song)
+        print(f"Waiting {pause_length} seconds...")
         take_break(dance, dances, pause_length)
 
 

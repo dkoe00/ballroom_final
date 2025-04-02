@@ -24,6 +24,7 @@ def main():
     playlist_id = extract_playlist_ids(playlist)
     set_up_downloads(download, [style], playlist_id)
     
+    print(f"Playing {style}")
     dir_path = generate_dir_path(style)
     for _ in range(number):
         song = select_song(dir_path, length) 
