@@ -409,7 +409,7 @@ def select_song(dir_path, song_length):
     if song_length == "long":
         min_length, max_length = 115, 130
     elif song_length == "normal":
-        min_length, max_length = 90, 115
+        min_length, max_length = 80, 115
     else:
         min_length, max_length = 60, 600
 
