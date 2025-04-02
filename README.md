@@ -54,18 +54,18 @@ pip install -r requirements.txt
    ```
 2. **Set Up Environment Variables:**
    - Create a `.env` file in the project root.
-   - Add YouTube Music playlist URLs for each dance in the following format:
+   - Add YouTube playlist URLs for each dance in the following format:
      ```env
-     SLOW_WALTZ_URL="https://music.youtube.com/playlist?list=..."
-     TANGO_URL="https://music.youtube.com/playlist?list=..."
-     VIENNESE_WALTZ_URL="https://music.youtube.com/playlist?list=..."
-     SLOW_FOXTROT_URL="https://music.youtube.com/playlist?list=..."
-     QUICKSTEP_URL="https://music.youtube.com/playlist?list=..."
-     SAMBA_URL="https://music.youtube.com/playlist?list=..."
-     CHACHA_URL="https://music.youtube.com/playlist?list=..."
-     RUMBA_URL="https://music.youtube.com/playlist?list=..."
-     PASO_URL="https://music.youtube.com/playlist?list=..."
-     JIVE_URL="https://music.youtube.com/playlist?list=..."
+     SLOW_WALTZ_URL="https://www.youtube.com/playlist?list=..."
+     TANGO_URL="https://www.youtube.com/playlist?list=..."
+     VIENNESE_WALTZ_URL="https://www.youtube.com/playlist?list=..."
+     SLOW_FOXTROT_URL="https://www.youtube.com/playlist?list=..."
+     QUICKSTEP_URL="https://www.youtube.com/playlist?list=..."
+     SAMBA_URL="https://www.youtube.com/playlist?list=..."
+     CHACHA_URL="https://www.youtube.com/playlist?list=..."
+     RUMBA_URL="https://www.youtube.com/playlist?list=..."
+     PASO_URL="https://www.youtube.com/playlist?list=..."
+     JIVE_URL="https://www.youtube.com/playlist?list=..."
      ```
 3. **Run the Program:**
    
