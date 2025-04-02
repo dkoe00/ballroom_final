@@ -36,7 +36,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description="Play music for a specific dance style")
     parser.add_argument("--download", "-d", help="Download all songs from playlist first", action="store_true")
     parser.add_argument("--length", "-l", help="Specify length of songs: long, normal, or any", 
-                        type=str, default="any", choices=["long", "normal", "any")
+                        type=str, default="any", choices=["long", "normal", "any"])
     parser.add_argument("--number", "-n", help="Specify number of songs", 
                         type=int, default=10)
     parser.add_argument("style", help="Specify dance style", 

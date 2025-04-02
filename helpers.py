@@ -396,8 +396,8 @@ def select_song(dir_path, song_length):
     if not isinstance(dir_path, str):
         raise ValueError("Invalid input: dir_path must be a string")
 
-    if song_length not in ["long", "normal"]:
-        raise ValueError("Invalid input: song_length must be long or normal")
+    if song_length not in ["long", "normal", "any"]:
+        raise ValueError("Invalid input: song_length must be any, long, or normal")
     
     # get list of tracks and metadata from tracks.json
     tracks = extract_song_list(dir_path)
@@ -408,8 +408,10 @@ def select_song(dir_path, song_length):
     # filter the tracks of correct length
     if song_length == "long":
         min_length, max_length = 115, 130
-    else:
+    elif song_length == "normal":
         min_length, max_length = 90, 115
+    else:
+        min_length, max_length = 60, 600
 
     applicable_tracks = [
         track["videoId"] for track in tracks
