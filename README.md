@@ -82,6 +82,9 @@ pip install -r requirements.txt
 ## Usage
 ### Command-Line Options
 The program provides various arguments for customization:
+
+**Playing a final:**
+
 ```bash
 python ballroom_final.py section [OPTIONS]
 ```
@@ -97,6 +100,9 @@ python ballroom_final.py -d -k c -l long -p 45 -s latin
 ```
 This redownloads all songs for the relevant dance styles and plays a latin final for class `C`, selects long songs, and introduces a 45-second pause between tracks.
 
+
+**Playing music for a specific dance style:**
+
 ```bash
 python dance.py style [OPTIONS]
 ```
@@ -108,6 +114,7 @@ python dance.py style [OPTIONS]
 **Example:**
 ```bash
 python dance.py rumba -d -l normal -n 5
+```
 
 This redownloads all Rumba songs and plays Rumba music, stopping after 5 songs.
 
@@ -124,7 +131,7 @@ This redownloads all Rumba songs and plays Rumba music, stopping after 5 songs.
    - Check if downloaded MP3 files exist in the correct directories.
 
 2. **Music stops playing on display inactivity?**
-   - On MacOS: run the program with ```bash caffeinate -i python ballroom_final.py section [...] ``` instead
+   - On MacOS: run the program with `bash caffeinate -i python ballroom_final.py section [...]` instead
 
 3. **Error: `Please provide playlist URLs`?**
    - Ensure the `.env` file is correctly configured with valid YouTube Music playlist URLs.
