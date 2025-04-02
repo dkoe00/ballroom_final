@@ -209,7 +209,7 @@ def generate_dir_path(dance):
     if not isinstance(dance, str) or not dance.strip():
         raise ValueError("Invalid input: dance must be a non-empty string")
 
-    return os.path.join(os.getcwd(), dance)
+    return os.path.expanduser(os.path.join("~/Projects/ballroom", dance))
 
 
 def play_song(dir_path, song):
@@ -218,7 +218,7 @@ def play_song(dir_path, song):
     if not isinstance(dir_path, str) or not isinstance(song, str):
         raise ValueError("Invalid input: dir_path and song must be strings")
 
-    path_to_mp3 = os.path.join(dir_path, f"{song}.mp3")
+    path_to_mp3 = os.path.expanduser(os.path.join(dir_path, f"{song}.mp3"))
 
     if not os.path.exists(path_to_mp3):
         raise FileNotFoundError(f"File not found: {path_to_mp3}")
