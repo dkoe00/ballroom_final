@@ -16,7 +16,7 @@ def main():
     
     # get environment variables, command line arguments and other setup
     download, level, song_length, pause_length, section = parse_arguments()
-    playlists = select_relevant_playlists(section)
+    playlists = select_relevant_playlists(section, level)
 
     if any(not playlist for playlist in playlists):
         raise ValueError("Please provide playlist URLs for each dance in .env file")
