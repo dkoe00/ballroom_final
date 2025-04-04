@@ -33,7 +33,6 @@ def main():
         song = select_song(dir_path, song_length)
         print(f"Playing {dance}")
         play_song(dir_path, song)
-        print(f"Waiting {pause_length} seconds...")
         take_break(dance, dances, pause_length)
 
 
@@ -76,6 +75,7 @@ def take_break(dance, dances, pause_length):
         raise ValueError("Invalid input: pause_length must be a non-negative number")
 
     if 3 <= len(dances) <= 5 and dance not in ["quickstep", "jive"]:
+        print(f"Waiting {pause_length} seconds...")
         time.sleep(pause_length)
 
 
