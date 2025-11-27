@@ -143,7 +143,4 @@ This redownloads all Rumba songs and plays Rumba music, stopping after 5 songs.
 ## License
 This project is licensed under the MIT License.
 
-## Contributing
-We welcome contributions! Feel free to open issues or submit pull requests to improve the application.
-
 
